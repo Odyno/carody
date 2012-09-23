@@ -1,4 +1,4 @@
-carody
+Carody
 ======
 
-Carody is Wordpress plugin for feet management
+Baseline of carody Wordpress plugin
