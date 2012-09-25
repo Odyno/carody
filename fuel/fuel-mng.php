@@ -8,7 +8,7 @@ if (!function_exists('add_action')) {
 wp_enqueue_script('jquery');
 wp_enqueue_script('jquery-ui-core');
 wp_enqueue_script('jquery-ui-datepicker');
-wp_enqueue_style('jquery.ui.theme', WP_PLUGIN_URL . '/carody/css/jquery-ui-1.7.3.custom.css');
+wp_enqueue_style('jquery.ui.theme.custom', WP_PLUGIN_URL . '/carody/css/jquery-ui-1.7.3.custom.css');
 
 include( WP_PLUGIN_DIR . '/carody/fuel/Carody_FuelList.php');
 
@@ -21,6 +21,7 @@ if (!isset($data[0])) {
 } else {
   $fueldata = @$data[0];
 }
+
 ?>
 
 
@@ -72,6 +73,7 @@ if (!isset($data[0])) {
 
   <p class="submit">
     <input type="hidden" name="do" value="<?php echo $action; ?>">
+    <input type="hidden" name="id" value="<?php echo $_REQUEST['fuelid'] ?>">
     <input type="reset" class="button" value="Reset">
     <input type="submit" value="<?php echo $action; ?>" class="button-primary" tabindex="5" accesskey="p" >
     <br class="clear">

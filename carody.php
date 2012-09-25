@@ -37,27 +37,14 @@ register_deactivation_hook(CARODY_FILE, 'carody_on_deactive');
 register_uninstall_hook(CARODY_FILE, 'carody_on_uninstall');
 
 
-//
-//
-//
-//require_once 'class-carody-plugin-lifecycle-manager.php';
-//
-//include_once plugin_dir_path(__FILE__) . '/CarodyPluginManager.class.php';
-//if (!class_exists('CarodyPluginManager')) {
-//  wp_die("CarodyPluginManager not Loaded", "Plugin Failed To load");
-//}
-//
-//$carody_PluginManager=new CarodyPluginManager(__FILE__);
-//
-//
-//
-////Gestore dei menù
-//include_once plugin_dir_path(__FILE__) . '/CarodyMenuManager.php';
-//
-//
-////Gestore dei Widget
-//include_once plugin_dir_path(__FILE__) . '/fuel/FuelWidgets.php';
-//if (!function_exists('carody_dashboard_widgets')) {
-//  wp_die("Widgets not Loaded", "Plugin Failed To load");
-//}
+
+//Gestore dei menù
+include_once plugin_dir_path(__FILE__) . '/carody-menu-manager.php';
+
+
+//Gestore dei Widget
+include_once plugin_dir_path(__FILE__) . '/fuel/FuelWidgets.php';
+if (!function_exists('carody_dashboard_widgets')) {
+  wp_die("Widgets not Loaded", "Plugin Failed To load");
+}
 ?>

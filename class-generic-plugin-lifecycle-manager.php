@@ -10,9 +10,9 @@ if (!class_exists('Generic_Plugin_Lifecycle_Manager')) :
    * This class triggers functions that run during activation/deactivation & uninstallation
    */
   abstract class Generic_Plugin_Lifecycle_Manager {
-    const DEVELOPE_MODE = true;
+    const DEVELOPE_MODE = false;
 
-    private $message = array();
+    private static $message = array();
 
     function __construct($case) {
       if (!$case)
@@ -36,24 +36,36 @@ if (!class_exists('Generic_Plugin_Lifecycle_Manager')) :
     }
 
     private function on_active() {
-     
+
+      $this->checkUpdate();
       $this->activate_cb();
+   //   update_option($this->get_name().'_version', $this->get_version());
 
     }
 
     private function on_deactive() {
-     
       $this->deactivate_cb();
       if (Generic_Plugin_Lifecycle_Manager::DEVELOPE_MODE)
         $this->uninstall_cb();
     }
 
     private function on_unistall() {
-    
       if (__FILE__ == WP_UNINSTALL_PLUGIN) {
         $this->uninstall_cb();
+        delete_option($this->get_name().'_version');
       }
     }
+
+     private function checkUpdate() {
+       $version= get_option($this->get_name().'_version','-1');
+       if ($version != '-1'){
+          if ($this->get_version() == $version){
+            $this->update_request_cb($version);
+          }
+       }else{
+         add_option($this->get_name().'_version', $this->get_version());
+       }
+     }
 
     function addInfo($message) {
       $this->message[].=$message;
