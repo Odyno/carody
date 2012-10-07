@@ -1,16 +1,13 @@
 <?php
-include(  ABSPATH.'wp-content/plugins/carody/equipment/Carody_Equipments.php');
-include(  ABSPATH.'wp-content/plugins/carody/fuel/Carody_FuelList.php');
-include(  ABSPATH.'wp-content/plugins/carody/fuel/Carody_FuelManager.php');
+include(  CARODY_DIR . '/eqp/class-carody-eqp-manager.php');
+include(  CARODY_DIR . '/fuel/class-carody-fuel-list.php');
+include(  CARODY_DIR . '/fuel/class-carody-fuel-manager.php');
 
 
-$testListTable = new Carody_FuelList();
-$equipment=new Carody_Equipments();
-
-
+$carodyTable = new Carody_Fuel_List();
 
 //managerequest
-$fuelManager=new Carody_FuelManager();
+$fuelManager=new Carody_Fuel_Manager(new Carody_Eqp_Manager());
 $fuelManager->applayAction($_REQUEST);
 
 
@@ -24,9 +21,9 @@ $fuelManager->applayAction($_REQUEST);
 
   <div style="background:#ECECEC;border:1px solid #CCC;padding:0 10px;margin-top:5px;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;">
     <p>In questa scheda sono contenuti tutti i rifornimenti effettuati.</p>
-    <p>La macchina in oggetto è la <?php $equipment->showDatasheetConsume(); ?></p>
+    <p>La macchina in oggetto è la ???</p>
   </div>
 
-  <?php $testListTable->show("fuel-table") ?>
+  <?php $carodyTable->show("fuel-table") ?>
 
 </div>

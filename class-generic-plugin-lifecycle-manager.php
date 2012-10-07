@@ -10,7 +10,7 @@ if (!class_exists('Generic_Plugin_Lifecycle_Manager')) :
    * This class triggers functions that run during activation/deactivation & uninstallation
    */
   abstract class Generic_Plugin_Lifecycle_Manager {
-    const DEVELOPE_MODE = false;
+    const DEVELOPE_MODE = true;
 
     private static $message = array();
 
