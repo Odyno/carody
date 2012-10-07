@@ -11,7 +11,11 @@ wp_enqueue_script('jquery-ui-datepicker');
 wp_enqueue_style('jquery.ui.theme.custom', WP_PLUGIN_URL . '/carody/css/jquery-ui-1.7.3.custom.css');
 
 require_once ( CARODY_DIR . '/fuel/class-carody-fuel-list.php');
+require_once ( CARODY_DIR . '/fuel/class-carody-fuel-statistic.php');
 require_once ( CARODY_DIR . '/eqp/class-carody-eqp-assoc.php');
+
+
+
 
 function get_carody_fuel_form_data($fuelid=null,$action=null) {
 
@@ -21,10 +25,11 @@ function get_carody_fuel_form_data($fuelid=null,$action=null) {
   if (!isset($dbFuelData[0])) {
     date_default_timezone_set('Europe/Rome');
     $out['DataTime'] = current_time('mysql');
+    $statistic=new Carody_Fuel_Statistic($dbDatiAuto);
     $out['id_fuel'] = "";
-    $out['TotKm'] = "0";
-    $out['PrezzoAlLitro'] = "0";
-    $out['PrezzoRifornimento'] = "0";
+    $out['TotKm'] = $statistic->getKM();
+    $out['PrezzoAlLitro'] = $statistic->getFuelPrice();
+    $out['PrezzoRifornimento'] = $statistic->getTotFuelPrice();
 //    $out['action']
 //    $out['auto_user']
   } else {
