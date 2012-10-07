@@ -6,7 +6,7 @@ if (!function_exists('add_action')) {
 }
 
 
-include( CARODY_DIR . '/eqp/class-carody-eqp-assoc.php');
+require_once ( CARODY_DIR . '/eqp/class-carody-eqp-assoc.php');
 
 function get_carody_eqp_asoc_html_select() {
   

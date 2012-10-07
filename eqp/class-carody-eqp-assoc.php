@@ -7,18 +7,21 @@ if (!class_exists('Carody_Eqp_Assoc')) :
     var $wpdb, $databasePre;
 
     function __construct() {
-
       global $wpdb;
       $this->wpdb = $wpdb;
       $this->databasePre = $wpdb->prefix;
     }
 
-    static function getQueryGetUserEQId($idUtente=null) {
+    static function getQueryGetUserEQId($idUtente=null,$limit=0) {
       if ($idUtente == null) {
         $idUtente = get_current_user_id();
       }
+
       $sql = " select Macchina_idMacchina
                 from wp_Utente_Macchina where Users_ID = '$idUtente'";
+      if ($limit > 0){
+        $sql .=" limit $limit ";
+      }
       return $sql;
     }
 
@@ -26,7 +29,7 @@ if (!class_exists('Carody_Eqp_Assoc')) :
       if ($idUtente == null) {
         $idUtente = get_current_user_id();
       }
-      $sql = "select ma.idMacchina, ma.Marca, ma.Modello, mu.Priority as Priority 
+      $sql = "select mu.idUtente_Macchina , ma.idMacchina, ma.Marca, ma.Modello, mu.Priority as Priority
                  from  wp_Macchina as ma, wp_Utente_Macchina as mu
                  where ma.idMacchina in ( " . self::getQueryGetUserEQId($idUtente) . " )
                  order by Priority ";
@@ -38,11 +41,20 @@ if (!class_exists('Carody_Eqp_Assoc')) :
         $idUtente = get_current_user_id();
       }
 
-      $sql = "select ma.idMacchina, ma.Marca, ma.Modello, 0 as Priority
+      $sql = "select -1 as idUtente_Macchina, ma.idMacchina, ma.Marca, ma.Modello, 0 as Priority
                 from wp_Macchina as ma where ma.idMacchina not in ( " . self::getQueryGetUserEQId($idUtente) . " )
                 union " .
               self::getQueryGetUserEQ($idUtente = null);
       return $sql;
+    }
+
+    static function get_eqp_from_db($idUtente=null) {
+      global $wpdb;
+
+      $sql = self::getQueryGetUserEQId($idUtente);
+
+      $out = $wpdb->get_results($sql, ARRAY_A);
+      return $out;
     }
 
     static function get_eqp_assoc_from_db($sql = null) {
@@ -53,6 +65,11 @@ if (!class_exists('Carody_Eqp_Assoc')) :
       $out = $wpdb->get_results($sql, ARRAY_A);
       return $out;
     }
+
+    static function get_eqp_assoc_user($idUtente=null) {
+
+    }
+
 
     function applayAction($commands) {
       try {

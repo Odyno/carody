@@ -7,16 +7,13 @@ if (!class_exists('Carody_Fuel_Manager')) {
 
   class Carody_Fuel_Manager {
 
-    var $wpdb, $databasePre, $car;
+    var $wpdb, $databasePre;
 
-    function __construct($class_eqp_manager) {
-      if ($class_eqp_manager == null){
-        wp_die("null on eqp manager!!!");
-      }
+    function __construct() {
       global $wpdb;
       $this->wpdb = $wpdb;
       $this->databasePre = $wpdb->prefix;
-      $this->car = $class_eqp_manager;
+      
     }
 
     function applayAction($commands) {
@@ -51,6 +48,7 @@ if (!class_exists('Carody_Fuel_Manager')) {
     }
 
     function insert_action($commands) {
+      
       $rows_affected = $this->wpdb->insert($this->databasePre . "Fuel", $this->getDataFromCommand($commands));
     }
 
@@ -60,8 +58,7 @@ if (!class_exists('Carody_Fuel_Manager')) {
           'TotKm' => $commands['tot_km'],
           'PrezzoAlLitro' => $commands['fuel_costo_unitario'],
           'PrezzoRifornimento' => $commands['fuel_costo_totale'],
-          'Macchina_idMacchina' => $this->car->getIdAuto(),
-          'Macchina_idUtente' => $this->car->getIdUtente()
+          'Utente_Macchina_idUtente_Macchina' => $commands['auto_user']
       );
     }
 

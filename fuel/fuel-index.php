@@ -1,15 +1,15 @@
 <?php
-include(  CARODY_DIR . '/eqp/class-carody-eqp-manager.php');
 include(  CARODY_DIR . '/fuel/class-carody-fuel-list.php');
 include(  CARODY_DIR . '/fuel/class-carody-fuel-manager.php');
 
 
 $carodyTable = new Carody_Fuel_List();
-
-//managerequest
-$fuelManager=new Carody_Fuel_Manager(new Carody_Eqp_Manager());
+$fuelManager=new Carody_Fuel_Manager();
 $fuelManager->applayAction($_REQUEST);
 
+
+include( CARODY_DIR . '/eqp/class-carody-eqp-assoc.php');
+$datiAuto=Carody_Eqp_Assoc::get_eqp_assoc_from_db();
 
 ?>
 
@@ -21,7 +21,14 @@ $fuelManager->applayAction($_REQUEST);
 
   <div style="background:#ECECEC;border:1px solid #CCC;padding:0 10px;margin-top:5px;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;">
     <p>In questa scheda sono contenuti tutti i rifornimenti effettuati.</p>
-    <p>La macchina in oggetto è la ???</p>
+    
+    <lu>
+      <li><b>Modello:</b> <?php echo $datiAuto[0]['Modello'];?></li>
+      <li><b>Marca:</b> <?php echo $datiAuto[0]['Marca'];?></li>
+      <li><b>Capienza Serbatoio:</b> n.p.</li>
+      <li><b>Cosumo medio dichiarato:</b> n.p.</li>
+      <li><b>Il tuo consumo medio:</b> n.p.</li>
+    </lu>
   </div>
 
   <?php $carodyTable->show("fuel-table") ?>

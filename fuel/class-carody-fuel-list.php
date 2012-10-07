@@ -7,6 +7,9 @@ if (!class_exists('Carody_Fuel_List')) {
     require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
   }
 
+  require_once (  CARODY_DIR . '/fuel/class-carody-fuel-view.php');
+
+
   class Carody_Fuel_List extends WP_List_Table {
 
     /**     * ***********************************************************************
@@ -313,13 +316,7 @@ if (!class_exists('Carody_Fuel_List')) {
     }
 
     static function get_fuel_data_from_db($fuelId="-1") {
-      global $wpdb;
-      $sql="SELECT idFuel, DataTime, TotKm, PrezzoAlLitro, PrezzoRifornimento, Macchina_idMacchina, Macchina_idUtente FROM wp_Fuel WHere Macchina_idUtente = 1 and Macchina_idMacchina = 1";
-      if ($fuelId != "-1"){
-        $sql .= " and idFuel = ".$fuelId;
-      }
-      $out = $wpdb->get_results($sql, ARRAY_A);
-      return $out;
+      return Carody_Fuel_View::get_fuel_data_from_db();
     }
 
     function show($id) {

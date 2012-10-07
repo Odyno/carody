@@ -3,11 +3,14 @@ include( CARODY_DIR . '/eqp/class-carody-eqp-list.php');
 include( CARODY_DIR . '/eqp/class-carody-eqp-mgr.php');
 
 
+
+
 $carodyTable = new Carody_Eqp_List();
 
 //managerequest
 $fuelManager=new Carody_Eqp_Mgr();
 $fuelManager->applayAction($_REQUEST);
+
 
 ?>
 
