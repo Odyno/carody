@@ -39,12 +39,9 @@ register_uninstall_hook(CARODY_FILE, 'carody_on_uninstall');
 
 
 //Gestore dei menù
-include_once plugin_dir_path(__FILE__) . '/carody-menu-manager.php';
+require_once CARODY_DIR . '/carody-menu-manager.php';
 
+//Gestore dei widget
+require_once CARODY_DIR . '/carody-widget-manager.php';
 
-//Gestore dei Widget
-include_once plugin_dir_path(__FILE__) . '/fuel/FuelWidgets.php';
-if (!function_exists('carody_dashboard_widgets')) {
-  wp_die("Widgets not Loaded", "Plugin Failed To load");
-}
 ?>
