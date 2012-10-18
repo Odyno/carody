@@ -8,9 +8,9 @@ $fuelManager=new Carody_Fuel_Manager();
 $fuelManager->applayAction($_REQUEST);
 
 
-include( CARODY_DIR . '/eqp/class-carody-eqp-assoc.php');
-$datiAuto=Carody_Eqp_Assoc::get_eqp_assoc_from_db();
 
+$carodySession = new Carody_Sessions();
+$carody_modello_form = Carody_Sessions::check($carodySession->get_car_prop('Modello'));
 ?>
 
 
@@ -22,13 +22,13 @@ $datiAuto=Carody_Eqp_Assoc::get_eqp_assoc_from_db();
   <div style="background:#ECECEC;border:1px solid #CCC;padding:0 10px;margin-top:5px;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;">
     <p>In questa scheda sono contenuti tutti i rifornimenti effettuati.</p>
     
-    <lu>
-      <li><b>Modello:</b> <?php echo $datiAuto[0]['Modello'];?></li>
-      <li><b>Marca:</b> <?php echo $datiAuto[0]['Marca'];?></li>
-      <li><b>Capienza Serbatoio:</b> n.p.</li>
-      <li><b>Cosumo medio dichiarato:</b> n.p.</li>
+    <ul>
+      <li><b>Modello:</b> <?php echo $carody_modello_form; ?></li>
+      <li><b>Marca:</b> <?php echo $carodySession->get_car_prop('Marca');?></li>
+      <li><b>Capienza Serbatoio:</b> <?php echo $carodySession->get_car_prop('MaxSerbatoioLitri');?></li>
+      <li><b>Cosumo medio dichiarato:</b> <?php echo $carodySession->get_car_prop('ConsumoMedio');?></li>
       <li><b>Il tuo consumo medio:</b> n.p.</li>
-    </lu>
+    </ul>
   </div>
 
   <?php $carodyTable->show("fuel-table") ?>

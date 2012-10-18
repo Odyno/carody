@@ -15,12 +15,16 @@ require_once ( CARODY_DIR . '/fuel/class-carody-fuel-statistic.php');
 require_once ( CARODY_DIR . '/eqp/class-carody-eqp-assoc.php');
 
 
+$carodySession = new Carody_Sessions();
+
+
+
 
 
 function get_carody_fuel_form_data($fuelid=null,$action=null) {
 
   $dbFuelData = ($fuelid != null) ? Carody_Fuel_List::get_fuel_data_from_db($fuelid) : null;
-  $dbDatiAuto = Carody_Eqp_Assoc::get_eqp_assoc_from_db();
+  $dbDatiAuto = Carody_Sessions::check(@Carody_Eqp_Assoc::get_eqp_assoc_from_db());
 
   if (!isset($dbFuelData[0])) {
     date_default_timezone_set('Europe/Rome');
@@ -34,21 +38,22 @@ function get_carody_fuel_form_data($fuelid=null,$action=null) {
 //    $out['auto_user']
   } else {
     $out['id_fuel'] = $fuelid;
-    $out['DataTime'] = $dbFuelData['DataTime'];
-    $out['TotKm'] = $dbFuelData['TotKm'];
-    $out['PrezzoAlLitro'] = $dbFuelData['PrezzoAlLitro'];
-    $out['PrezzoRifornimento'] = $dbFuelData['PrezzoRifornimento'];
+    $out['DataTime'] = $dbFuelData[0]['DataTime'];
+    $out['TotKm'] = $dbFuelData[0]['TotKm'];
+    $out['PrezzoAlLitro'] = $dbFuelData[0]['PrezzoAlLitro'];
+    $out['PrezzoRifornimento'] = $dbFuelData[0]['PrezzoRifornimento'];
 //    $out['action']
 //    $out['auto_user']
   }
   
   $out['action'] = ($action != null) ? $action : 'insert';
   $out['auto_user'] = $dbDatiAuto[0]['idUtente_Macchina'];
+  $out['id_fuel']= ($fuelid != null) ? $fuelid : null;
 
   return $out;
 }
 
-$form_data = get_carody_fuel_form_data(@$_REQUEST['fuelid'], @$_REQUEST['action']);
+$form_data = get_carody_fuel_form_data(@$_REQUEST['fuelId'], @$_REQUEST['action']);
 ?>
 
 <div class="wrap">

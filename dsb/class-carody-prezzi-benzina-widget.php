@@ -4,6 +4,13 @@ if (!class_exists("Carody_Prezzi_Benzina_Widget")) :
 
   class Carody_Prezzi_Benzina_Widget {
 
+    static function attach() {
+      wp_add_dashboard_widget(
+              'Carody_Prezzi_Benzina_Widget_Id',
+              'PrezziBenzina News',
+              array('Carody_Prezzi_Benzina_Widget', 'show'));
+    }
+
     function show() {
       echo '<div class="rss-widget">';
 
@@ -18,12 +25,7 @@ if (!class_exists("Carody_Prezzi_Benzina_Widget")) :
       echo "</div>";
     }
 
-    static function attach() {
-      wp_add_dashboard_widget(
-              'Carody_Prezzi_Benzina_Widget_Id',
-              'PrezziBenzina News',
-              array('Carody_Prezzi_Benzina_Widget', 'show'));
-    }
+    
 
   }
 

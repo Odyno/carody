@@ -44,4 +44,10 @@ require_once CARODY_DIR . '/carody-menu-manager.php';
 //Gestore dei widget
 require_once CARODY_DIR . '/carody-widget-manager.php';
 
+//Gestore dei widget
+require_once CARODY_DIR . '/class-carody-sessions.php';
+
+
+
+
 ?>

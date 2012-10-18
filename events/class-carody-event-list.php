@@ -1,16 +1,12 @@
 <?php
 
-if (!class_exists('Carody_Fuel_List')) {
-
-
+if (!class_exists('Carody_Event_List')) {
+  include_once ( CARODY_DIR . '/events/class-carody-event-query.php');
   if (!class_exists('WP_List_Table')) {
     require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
   }
 
-  require_once (  CARODY_DIR . '/fuel/class-carody-fuel-view.php');
-
-
-  class Carody_Fuel_List extends WP_List_Table {
+  class Carody_Event_List extends WP_List_Table {
 
     /**     * ***********************************************************************
      * REQUIRED. Set up a constructor that references the parent constructor. We
@@ -21,8 +17,8 @@ if (!class_exists('Carody_Fuel_List')) {
 
       //Set parent defaults
       parent::__construct(array(
-                  'singular' => 'Fuel', //singular name of the listed records
-                  'plural' => 'Fuels', //plural name of the listed records
+                  'singular' => 'Intervento', //singular name of the listed records
+                  'plural' => 'Interventi', //plural name of the listed records
                   'ajax' => false        //does this table support ajax?
               ));
     }
@@ -50,10 +46,12 @@ if (!class_exists('Carody_Fuel_List')) {
      * ************************************************************************ */
     function column_default($item, $column_name) {
       switch ($column_name) {
-        case 'DataTime':
-        case 'TotKm':
-        case 'PrezzoAlLitro':
-        case 'PrezzoRifornimento':
+        case 'data':
+        case 'km':
+        case 'intervento':
+        case 'azione':
+        case 'prezzo':
+        case 'note':
           return $item[$column_name];
         default:
           return print_r($item, true); //Show the whole array for troubleshooting purposes
@@ -76,18 +74,18 @@ if (!class_exists('Carody_Fuel_List')) {
      * @param array $item A singular item (one full row's worth of data)
      * @return string Text to be placed inside the column <td> (movie title only)
      * ************************************************************************ */
-    function column_DataTime($item) {
+    function column_Data($item) {
 
       //Build row actions
       $actions = array(
-          'edit' => sprintf('<a href="?page=%s&action=%s&fuelId=%s">Edit</a>', 'carody/fuel/fuel-mng.php', 'edit', $item['idFuel']),
-          'delete' => sprintf('<a href="?page=%s&action=%s&fuelId=%s">Delete</a>', 'carody/fuel/fuel-mng.php', 'delete', $item['idFuel']),
+          'edit' => sprintf('<a href="?page=%s&action=%s&eventoId=%s">Edit</a>', 'carody/events/event-mgt.php', 'edit', $item['idEvento']),
+          'delete' => sprintf('<a href="?page=%s&action=%s&eventoId=%s">Delete</a>', 'carody/evets/event-mgt.php', 'delete', $item['idEvento']),
       );
 
       //Return the title contents
       return sprintf('%1$s <span style="color:silver">(id:%2$s)</span>%3$s',
-              /* $1%s */ $item['DataTime'],
-              /* $2%s */ $item['idFuel'],
+              /* $1%s */ $item['data'],
+              /* $2%s */ $item['idEvento'],
               /* $3%s */ $this->row_actions($actions)
       );
     }
@@ -105,7 +103,7 @@ if (!class_exists('Carody_Fuel_List')) {
       return sprintf(
               '<input type="checkbox" name="%1$s[]" value="%2$s" />',
               /* $1%s */ $this->_args['singular'], //Let's simply repurpose the table's singular label ("movie")
-              /* $2%s */ $item['idFuel']                //The value of the checkbox should be the record's id
+              /* $2%s */ $item['idEvento'] //The value of the checkbox should be the record's id
       );
     }
 
@@ -125,10 +123,12 @@ if (!class_exists('Carody_Fuel_List')) {
     function get_columns() {
       $columns = array(
           'cb' => '<input type="checkbox" />', //Render a checkbox instead of text
-          'DataTime' => 'Data time',
-          'TotKm' => 'Totale Km percorsi',
-          'PrezzoAlLitro' => 'Prezzo al Litro ',
-          'PrezzoRifornimento' => 'Costo totale del rifornimento'
+          'data' => 'Data e Ora',
+          'km' => 'Km Totali',
+          'intervento' => 'Intervento Eseguito',
+          'azione' => 'Azione',
+          'prezzo' => 'Prezzo',
+          'note' => 'Note'
       );
       return $columns;
     }
@@ -149,10 +149,12 @@ if (!class_exists('Carody_Fuel_List')) {
      * *********************************************************************** */
     function get_sortable_columns() {
       $sortable_columns = array(
-          'DataTime' => array('DataTime', true),
-          'TotKm' => array('TotKm', false),
-          'PrezzoAlLitro' => array('PrezzoAlLitro', false),
-          'PrezzoRifornimento' => array('PrezzoRifornimento', false)
+          'data' => array('data', true),
+          'km' => array('km', true),
+          'intervento' => array('intervento', true),
+          'azione' => array('azione', true),
+          'prezzo' => array('prezzo', true),
+          'note' => array('note', true)
       );
       return $sortable_columns;
     }
@@ -252,7 +254,8 @@ if (!class_exists('Carody_Fuel_List')) {
        * use sort and pagination data to build a custom query instead, as you'll
        * be able to use your precisely-queried data immediately.
        */
-      $data = $this->get_fuel_data_from_db();
+      $data = Carody_Event_Query::get_events_list();
+
 
       /**
        * This checks for sorting input and sorts the data in our array accordingly.
@@ -263,7 +266,7 @@ if (!class_exists('Carody_Fuel_List')) {
        * sorting technique would be unnecessary.
        */
       function usort_reorder($a, $b) {
-        $orderby = (!empty($_REQUEST['orderby'])) ? $_REQUEST['orderby'] : 'DataTime'; //If no sort, default to title
+        $orderby = (!empty($_REQUEST['orderby'])) ? $_REQUEST['orderby'] : 'data'; //If no sort, default to title
         $order = (!empty($_REQUEST['order'])) ? $_REQUEST['order'] : 'asc'; //If no order, default to asc
         $result = strcmp($a[$orderby], $b[$orderby]); //Determine sort order
         return ($order === 'asc') ? $result : -$result; //Send final sort direction to usort
@@ -313,10 +316,6 @@ if (!class_exists('Carody_Fuel_List')) {
           'per_page' => $per_page, //WE have to determine how many items to show on a page
           'total_pages' => ceil($total_items / $per_page)   //WE have to calculate the total number of pages
       ));
-    }
-
-    static function get_fuel_data_from_db($fuelId="-1") {
-      return Carody_Fuel_View::get_fuel_data_from_db();
     }
 
     function show($id) {

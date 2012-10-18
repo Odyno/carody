@@ -2,6 +2,8 @@
 
 if (!class_exists('Carody_Plugin_Lifecycle_Manager')) :
 
+  if (!class_exists('Carody_DB_Definition'))
+    require_once( CARODY_DIR . '/class-carody-db-definition.php' );
 
   if (!class_exists('Generic_Plugin_Lifecycle_Manager'))
     require_once( CARODY_DIR . '/class-generic-plugin-lifecycle-manager.php' );
@@ -9,15 +11,7 @@ if (!class_exists('Carody_Plugin_Lifecycle_Manager')) :
   class Carody_Plugin_Lifecycle_Manager extends Generic_Plugin_Lifecycle_Manager {
 
     var $doUpdate = false;
-
-    static function DDLs($databasePre="") {
-      $dbSchema = array(
-          $databasePre . "Macchina" => "CREATE TABLE `" . $databasePre . "Macchina` ( `idMacchina` INT(11) NOT NULL AUTO_INCREMENT , `Marca` VARCHAR(45) NULL , `Modello` VARCHAR(45) NULL , `MaxSerbatoioLitri` INT(11) NULL , `ConsumoMedio` FLOAT NULL , PRIMARY KEY (`idMacchina`) , UNIQUE INDEX `idMacchina_UNIQUE` (`idMacchina` ASC) ) ENGINE = MyISAM DEFAULT CHARACTER SET = utf8",
-          $databasePre . "Utente_Macchina" => "CREATE TABLE `" . $databasePre . "Utente_Macchina` ( `idUtente_Macchina` INT NOT NULL AUTO_INCREMENT , `Users_ID` BIGINT(20) UNSIGNED NOT NULL , `Macchina_idMacchina` INT(11) NOT NULL ,`Priority` INT(10) NOT NULL DEFAULT -1 , PRIMARY KEY (`idUtente_Macchina`) , INDEX `fk_Utente_Macchina_wp_users` (`Users_ID` ASC) , INDEX `fk_Utente_Macchina_Macchina1` (`Macchina_idMacchina` ASC) ) ENGINE = MyISAM DEFAULT CHARACTER SET = utf8",
-          $databasePre . "Fuel" => "CREATE TABLE `" . $databasePre . "Fuel` ( `idFuel` INT(11) NOT NULL AUTO_INCREMENT , `DataTime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP , `TotKm` INT(11) NOT NULL , `PrezzoAlLitro` DOUBLE NOT NULL , `PrezzoRifornimento` DOUBLE NOT NULL , `Utente_Macchina_idUtente_Macchina` INT NOT NULL , PRIMARY KEY (`idFuel`) , UNIQUE INDEX `idFuel_UNIQUE` (`idFuel` ASC) , INDEX `fk_Fuel_Utente_Macchina1` (`Utente_Macchina_idUtente_Macchina` ASC) ) ENGINE = MyISAM DEFAULT CHARACTER SET = utf8"
-      );
-      return $dbSchema;
-    }
+    var $doDataFeel = false;
 
     function __construct($case) {
       parent::__construct($case);
@@ -28,7 +22,7 @@ if (!class_exists('Carody_Plugin_Lifecycle_Manager')) :
     }
 
     function get_version() {
-      return "0.0.1";
+      return "0.0.2_5";
     }
 
     function update_request_cb($installed_version) {
@@ -55,26 +49,35 @@ if (!class_exists('Carody_Plugin_Lifecycle_Manager')) :
     private function _create_update_db_tables() {
 
       global $wpdb;
-
-      $dbSchema = self::DDLs($wpdb->prefix);
+      $wpdb->show_errors();
+      $dbSchema = Carody_DB_Definition::DDLs($wpdb->prefix);
       foreach ($dbSchema as $table_name => $ddl) {
         if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name || $this->doUpdate) {
           //table no exist or version is no good
           require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
           dbDelta($ddl);
+          $this->doDataFeel = true;
 
           $this->addInfo("Table $table_name Update!");
         } else {
           $this->addInfo("Table $table_name is installed and Updated");
         }
       }
-
+      if ($this->doDataFeel) {
+        $dataFill = Carody_DB_Definition::DataFill($wpdb->prefix);
+        foreach ($dataFill as $table_name => $inserts) {
+          foreach ($inserts as $insertData) {
+              $wpdb->insert($table_name, $insertData);
+          }
+        }
+      }
+      $wpdb->flush();
       $this->addInfo("DB done");
     }
 
     private function _drop_db_tables() {
       global $wpdb;
-      $dbSchema = self::DDLs($wpdb->prefix);
+      $dbSchema = Carody_DB_Definition::DDLs($wpdb->prefix);
       foreach ($dbSchema as $table_name => $ddl) {
         $wpdb->query("DROP TABLE {$table_name}");
         delete_option($table_name . "_table_ver");
