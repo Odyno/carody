@@ -249,7 +249,7 @@ if (!class_exists('Carody_Eqp_List')) {
       global $wpdb;
       $sql = "SELECT `idMacchina`,`Marca`,`Modello`,`MaxSerbatoioLitri`,`ConsumoMedio`FROM `" . $wpdb->prefix . "Macchina` ";
       if ($idMacchina != null) {
-        $sql .= " WHERE idMacchina = `".$idMacchina."` ";
+        $sql .= " WHERE `idMacchina` = ".$idMacchina." ";
       }
       $out = $wpdb->get_results($sql, ARRAY_A);
       return $out;

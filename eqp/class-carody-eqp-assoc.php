@@ -48,7 +48,7 @@ if (!class_exists('Carody_Eqp_Assoc')) :
       return $sql;
     }
 
-    static function get_eqp_from_db($idUtente=null) {
+    static function get_eqp_ids_from_db($idUtente=null) {
       global $wpdb;
 
       $sql = self::getQueryGetUserEQId($idUtente);
@@ -66,9 +66,9 @@ if (!class_exists('Carody_Eqp_Assoc')) :
       return $out;
     }
 
-    static function get_eqp_assoc_user($idUtente=null) {
-
-    }
+//    static function get_eqp_assoc_user($idUtente=null) {
+//
+//    }
 
 
     function applayAction($commands) {

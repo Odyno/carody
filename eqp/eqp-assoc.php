@@ -22,7 +22,7 @@ function get_carody_eqp_asoc_html_select() {
 
 //managerequest
 $fuelManager=new Carody_Eqp_Assoc();
-$fuelManager->applayAction($_REQUEST)
+$fuelManager->applayAction($_REQUEST);
 
 
 ?>

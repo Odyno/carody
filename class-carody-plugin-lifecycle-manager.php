@@ -124,15 +124,12 @@ if (!class_exists('Carody_Plugin_Lifecycle_Manager')) :
                 'carody_edit_eqp_assoc' => true,
                     ));
             $carAdministrator = add_role('CarAdministrator', 'Car Administrator', array(
-                'activate_plugins' => true,    ///TO DELETE
                 'read' => true,
-                'carody_profile_edit' => true,
                 'carody_read_report_fuel' => true,
                 'carody_edit_report_fuel' => true,
                 'carody_read_event' => true,
                 'carody_edit_event' => true,
                 'carody_read_eqp' => true,
-                'carody_edit_eqp' => true,
                     ));
         }
 
