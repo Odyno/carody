@@ -47,6 +47,9 @@ require_once CARODY_DIR . '/carody-widget-manager.php';
 //Gestore dei widget
 require_once CARODY_DIR . '/class-carody-sessions.php';
 
+//Gestore le interfacce xml-rpc
+require_once CARODY_DIR . '/carody-xml-rpc-manager.php';
+
 
 
 
